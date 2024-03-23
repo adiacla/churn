@@ -255,7 +255,7 @@ with st.container():
   st.markdown(prediccion, unsafe_allow_html=True)
   prediccion='Resultado: '+ str(y_predict[0])+ "    - en conclusion el cliente  "+churn[y_predict[0]]
   st.header(prediccion+':sunglasses:')
-  st.header("Con la siguiente probabilidad")
-  st.header('Probalidad de NO ',probabilidad[0][0])
-  st.header('Probalidad de Si ',probabilidad[0][1])
+  st.write("Con la siguiente probabilidad")
+  st.write('Probalidad de NO : ',"{0:.2%}".format(probabilidad[0][0]))
+  st.write('Probalidad de Si : ',"{0:.2%}".format(probabilidad[0][1]))
   
