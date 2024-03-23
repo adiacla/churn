@@ -186,40 +186,40 @@ def seleccionar(modeloL):
   modeloS=st.sidebar.selectbox("Modelo",modeloL)
 
   #Filtrar por COMP
-  st.sidebar.subheader('Seleccione la compRa')
-  COMPS=st.sidebar.slider("Seleccion",4000,12000,100)
+  st.sidebar.subheader('Seleccione la COMP')
+  COMPS=st.sidebar.slider("Seleccion",4000,18000,8000,100)
   
   #Filtrar por PROM
   st.sidebar.subheader('Selector del PROM')
-  PROMS=st.sidebar.slider("Seleccion",   0.7, 9.0,.5)
+  PROMS=st.sidebar.slider("Seleccion",   0.7, 9.0,5.0,.5)
   
   #Filtrar por COMINT
   st.sidebar.subheader('Selector de COMINT')
-  COMINTS=st.sidebar.slider("Seleccione",8000,24000,100)
+  COMINTS=st.sidebar.slider("Seleccione",1500,58000,12000,100)
   
   #Filtrar por COMPPRES
   st.sidebar.subheader('Selector de COMPPRES') 
-  COMPPRESS=st.sidebar.slider('Seleccione', 13000,57000,100)
+  COMPPRESS=st.sidebar.slider('Seleccione', 17000,90000,25000,100)
   
   #Filtrar por RATE
   st.sidebar.subheader('Selector de RATE')
-  RATES=st.sidebar.slider("Seleccione",0.5,4.0,0.1)
+  RATES=st.sidebar.slider("Seleccione",0.5,4.2,2.0,0.1)
 
   #Filtrar por DIASSINQ
   st.sidebar.subheader('Selector de DIASSINQ')
-  DIASSINQS=st.sidebar.slider("Seleccione", 270,1800,10)
+  DIASSINQS=st.sidebar.slider("Seleccione", 270,1800,500,10)
   
     #Filtrar por TASARET
   st.sidebar.subheader('Selector de TASARET')
-  TASARETS=st.sidebar.slider("Seleccione",0.3,1.9,.5)
+  TASARETS=st.sidebar.slider("Seleccione",0.3,1.9,0.8,.5)
   
     #Filtrar por NUMQ
   st.sidebar.subheader('Selector de NUMQ')
-  NUMQS=st.sidebar.slider("Seleccione",3.0,10.0,0.5)
+  NUMQS=st.sidebar.slider("Seleccione",3.0,10.0,4.0,0.5)
   
     #Filtrar por departamento
   st.sidebar.subheader('Selector de RETRE')
-  RETRES=st.sidebar.slider("Seleccione",3.3,35.0,.5)
+  RETRES=st.sidebar.slider("Seleccione",3.3,35.0,20.0,.5)
 
   
   return modeloS,COMPS, PROMS, COMINTS ,COMPPRESS, RATES, DIASSINQS,TASARETS, NUMQS, RETRES
