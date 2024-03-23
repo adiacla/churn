@@ -1,0 +1,2 @@
+# churn
+Deserción de clientes
