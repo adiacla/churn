@@ -12,7 +12,6 @@ import numpy as np
 import pandas as pd
 
 #importar las biliotecas graficas e imágenescd 
-from PIL import Image
 import matplotlib.pyplot as plt
 import seaborn as sn
 
@@ -41,9 +40,9 @@ st.set_page_config(
 
 @st.cache_resource
 def load_models():
-  modeloNB=jb.load('modeloNB.bin')
-  modeloArbol=jb.load('modeloArbol.bin')
-  modeloBosque=jb.load('ModeloBosque.bin')
+  modeloNB=jb.load('./modeloNB.bin')
+  modeloArbol=jb.load('./modeloArbol.bin')
+  modeloBosque=jb.load('./ModeloBosque.bin')
 
   return modeloNB,modeloArbol,modeloBosque
 
