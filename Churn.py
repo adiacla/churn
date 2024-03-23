@@ -24,7 +24,7 @@ import joblib as jb
 #from sklearn.ensemble import ExtraTreesClassifier
 
 
-imagen_inicial = Image.open("./churn.JPG") 
+imagen_inicial = Image.open("churn.JPG") 
 
 
 
@@ -40,9 +40,9 @@ st.set_page_config(
 
 @st.cache_resource
 def load_models():
-  modeloNB=jb.load('./modeloNB.bin')
-  modeloArbol=jb.load('./modeloArbol.bin')
-  modeloBosque=jb.load('./ModeloBosque.bin')
+  modeloNB=jb.load('modeloNB.bin')
+  modeloArbol=jb.load('modeloArbol.bin')
+  modeloBosque=jb.load('ModeloBosque.bin')
 
   return modeloNB,modeloArbol,modeloBosque
 
