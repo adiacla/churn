@@ -13,6 +13,7 @@ import pandas as pd
 
 #importar las biliotecas graficas e imágenescd 
 import matplotlib.pyplot as plt
+from PIL import Image
 import seaborn as sn
 
 #importar libreria de paralelizacion de modelos
@@ -171,8 +172,8 @@ churn = {1 : 'Se retira', 0 : 'No se Retira' }
 
 
 
-logo=Image.open("./churn.jpg")
-st.sidebar.write('...')
+logo=Image.open("churn.JPG")
+st.sidebar.write('')
 st.sidebar.image(logo, width=100)
 st.sidebar.header('Seleccione los datos de entrada')
 
