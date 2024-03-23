@@ -42,7 +42,7 @@ st.set_page_config(
 @st.cache_resource
 def load_models():
   modeloNB=jb.load('modeloNB.bin')
-  modeloArbol=jb.load('modeloArbol.bin')
+  modeloArbol=jb.load('ModeloArbol.bin')
   modeloBosque=jb.load('ModeloBosque.bin')
 
   return modeloNB,modeloArbol,modeloBosque
