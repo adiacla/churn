@@ -150,7 +150,7 @@ modeloNB,modeloArbol,modeloBosque= load_models()
 
 #Los siguientes textos aplican a nivel de la página.
 st.title("Aplicación de predicción")
-st.header('TML para Churn', divider='rainbow')
+st.header('Machine Learning para Churn', divider='rainbow')
 st.subheader('Ejemplo en los modelos :blue[Arbol de Decisión, Bosque Aleatorio y Naive Bayes]')
 
 #Crear contenedores.
@@ -299,7 +299,7 @@ churn = {1 : 'Cliente se retirará', 0 : 'Cliente No se Retirará' }
 styleimagen ="<style>[data-testid=stSidebar] [data-testid=stImage]{text-align: center;display: block;margin-left: auto;margin-right: auto;width: 100%;}</style>"
 st.sidebar.markdown(styleimagen, unsafe_allow_html=True)
 
-st.sidebar.image("Churn.JPG", width=300)
+st.sidebar.image("churn.JPG", width=300)
 
 #este script es para centrar pero si no lo desea no necesita hacerlo
 styletexto = "<style>h2 {text-align: center;}</style>"
