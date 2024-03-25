@@ -1,61 +1,170 @@
-#pip install -U scikit-learn
-# pip install joblib
-# pip install matplotlib
-# pip install seaborn
-# pip freeze
+#INTRODICCION
 
+"""Este es un ejemplo de cómo realizar una pagina Web usando streamlite
+para desplegar un modelo de Machine Learning después de haber sido entrenado 
+
+
+#Crear proyecto en Visual Studio Code
+
+Cree una carpeta y descargue todos los assests o recursos que va usar en la aplicacion
+imagenes, modelo.bin, archivos de datos, entre otros
+
+./nombre_proyecto
+                 /modelo.bin
+                 /proyecto.py
+                 /imagen.jpg
+                 /datos.csv
+                 
+ Los datos pueden estar en remoto y llamarlo en python con pandas.               
+ 
+#Bibliotecas requeridas para ejecutar el Deployment (Despiliegue a producción)
+
+En este archivo no requieres tener instalado en python todas lasbibliotecas utilizadas
+en el entrenamiento, solo las básicas para la página web
+
+#Caso especial scikit-learn
+
+Nota: antes de ejecutar cualquier código verifique con qué versión scikit-learn entrenó el modelo
+y con qué versión va a desplegar el mismo para el usuario final.
+
+Recomiento ir al enviroment (ambiente) donde lo entrenó. Si lo hizo con Google Colab cree un nuevo notebook
+y ejecute el siguiente código:
+!pip show scikit-learn
+
+Y haga lo mismo en el enviroment de su máquina local, es decir abra el terminal del VSC, <en menú View/Terminal> o con CTRL ñ
+y ejecute 
+pip show scikit-learn
+
+Una vez verificado que son la misma Versión, podrá ejecutar el desplieqgue, de lo contrario no podrá usar el modelo en producción.
+
+Si requiere actualizar recomiendo actualice Google Colab y vuelva a entrenar, y descargue los modelos salvados con joblib.
+!pip install --upgrade scikit-learn
+
+Si requiere instalar la última versión (cuando no esté instalada en su pc)
+# pip install -U scikit-learn
+
+
+#Otras bliotecas básicas
+
+Estas son algunas bibliotecas básicas, las instalas desde el Terminal- CTRL ñ en VSC (Visual Studio Code) 
+pip install joblib
+pip install matplotlib
+pip install seaborn
+pip freeze
+
+
+# Crear un Repositorio en Github 
+
+Antes de iniciar a escribir puede hacer la gestión de versiones con Github el proyecto, o siga los pasos para crear el
+Repositorio básico.
+
+Vaya a la opcion Create a new repository,
+Digiete el nombre Repository name, por ejemplo churn
+y haga un check a la casilla de Add a README file
+
+En esta carpeta vas a copiar todos los archivos de la carpeta del proyecto
+
+
+#Ejecutar el nombre_proyecto.py 
+
+
+Cuando ingrese a Terminal de VSC, verifique que está ubicado en la carpeta del proyeco de lo contrario cambie
+el directorio como se muestra en el ejemplo:
+
+prompt> cd c:/Users/adiaz/Documents/churn/Churn.py
+
+Si está ubicado en la carpeta del proyecto podrá ejecutar el servidor web de streamlit.
+Nota: El RUN del VSC NO lanza el servidor web, si usan el RUN puede ir validando la sintaxis y el debbug pero no lanza el servidor.
+
+Use el siguiente comando en cualquier shell o en Terminal de VSC para ejecutar y lanzar la página.
+
+prompt>streamlit run nombre_proyecto.py
+
+Tan pronto como ejecute el script como se muestra arriba, un servidor web Streamlit local se lanza y 
+la aplicación se abrirá en una nueva pestaña en tu navegador web predeterminado. 
+
+"""
+
+# Librerias a importar 
 
 import streamlit as st
 
 #importar las bibliotecas tradicionales de numpy y pandas
+
 import numpy as np
 import pandas as pd
 
-#importar las biliotecas graficas e imágenescd 
+#importar las biliotecas graficas e imágenes
+
 import matplotlib.pyplot as plt
-from PIL import Image
 import seaborn as sn
 
 #importar libreria de paralelizacion de modelos
 import joblib as jb
 
-#importar la libreria del modelo seleccionada
-#from sklearn.naive_bayes import GaussianNB
-#from sklearn.ensemble import RandomForestClassifier
-#from sklearn.ensemble import ExtraTreesClassifier
 
+#Configurar la pagina (llamada Document)
+#  Esta información aparece en la pestaña del navegador y el favíco
+#y además lanzamos el Documento divido en dos parte la barra lateral y la pagina.
 
-imagen_inicial = Image.open("churn.JPG") 
+#El archivo cliente.ico debe descargalo de internet o usar en web una aplicación
+#para convertir una imagen en formato favico.
+#por ejemplo: https://imagen.online-convert.com/es/convertir-a-ico
+#y descargalo en la carpeta del proyecto.
 
-
-
-## Iniciar barra lateral en la página web y título e ícono
+#El menú_items, lo podrá visualizar en los tres puntos verticales al lado derecho de la página...
 
 st.set_page_config(
-  page_title="Predcción de deserción de clientes de la compañía Alfredo's Retail",
+  page_title="Predicción de deserción de clientes",
   page_icon="cliente.ico",
-  initial_sidebar_state='auto'
+  initial_sidebar_state='auto',
+  menu_items={
+        'Report a bug': 'http://www.unab.edu.co',
+        'Get Help': "https://docs.streamlit.io/get-started/fundamentals/main-concepts",
+        'About': "# Alfredo Díaz. Inteligencia Artificial *Ejemplo de clase* Deployment!"
+    }
   )
 
 
+# Recordar que cada ve que cambien un valor de un botón, slider o entrada en la página, está vuelve a ejecutar
+#y puede tomar mucho tiempo recargar los modelos o los datos, por eso se usa un decorador "@" para poner en caché 
+#lo modelos de machine learning,
+# El decorador cache_resource para almacenar en caché funciones que devuelven recursos globales 
+# (por ejemplo, conexiones de bases de datos, modelos de aprendizaje automático).
+#Recomendacón: Se pone antes del comando o función, en este caso creamos una función que cargue el (los) modelo(s)
+# a usar en la aplicación
 
 @st.cache_resource
 def load_models():
   modeloNB=jb.load('modeloNB.bin')
   modeloArbol=jb.load('ModeloArbol.bin')
   modeloBosque=jb.load('ModeloBosque.bin')
-
   return modeloNB,modeloArbol,modeloBosque
 
+#Cargamos a los modelos a usarse en el proyecto. 
+#Nota, generalmente usanmos solo un modelo, pero para ejemplo académico lo vamos a hacer con 
+#los tres modelo entrenado pero recuerde que se escoje el que mejore score nos ofrezca
 
 modeloNB,modeloArbol,modeloBosque= load_models()
 
 
-#Primer contenedor
+#Los siguientes textos aplican a nivel de la página.
+st.title("Aplicación de predicción")
+st.header('TML para Churn', divider='rainbow')
+st.subheader('Ejemplo en los modelos :blue[Arbol de Decisión, Bosque Aleatorio y Naive Bayes]')
 
-with st.container():
+#Crear contenedores.
+
+#Puedo crear un container o una división de la página para separar o dividor la página en varias partes
+#Podemos usar una variable para crear el contenedor así:
+#contenedorintroduccion=st.container(border=True) y usar todos los métodos con ese contenedor por ejemplo
+#contenedorintroduccion.st.subheader(..)
+#o usarlo con with st.container() y llamar los diferente métodos dentro del with, recuerde dejar la tabulación.
+
+
+with st.container( border=True):
   st.subheader("Modelo Machine Learning para predecir la deserción de clientes")
-  st.title("Aplicación de predicción")
+  #Se desea usar emoji lo puedes buscar aqui.
   st.write("Realizado por Alfredo Díaz Claros:wave:")
   st.write("""
 
@@ -81,18 +190,24 @@ comparar los resultados.
   
   
 
-#Otro contenedor y lo partimos en derecha e izquierda
+#Vamos a crear otro contenedor y ese mismo contenedor por partimos en tres columnas
+# con el comando st.columns(3), se la asignamos a 3 variables cada columna para llamarla
 
-with st.container():
-  st.write("Nuevo contenedor")
-  left_column, right_column = st.columns(2)
+with st.container(border=True,height=300):
+  st.subheader("Detalles")
+  st.write(""" Este es un ejemplo de despliegue de los modelos de Machine Learning entrenados en
+           Google Colab con las librerias de scikit-learn par Naive Bayes, Arbles de Decisión y Bosques Aleatorios.
+           En este notebook podrás verificar el preprocesamiento del dataset y el entrenamiento y las pruebas
+           y scores obtenidos.
+           https://colab.research.google.com/drive/1bevxqlT_gQsZTrokc2LleIh40YTlQc2y?usp=sharing""")
+  
+  left_column, center_column, right_column = st.columns(3)
   with left_column:
-    st.subheader("Las librerias usadas para entrenar")
+    st.subheader("Introducción")
+    st.image("introduccion.png",width=100)
     st.write(
-      """
-      El objetivo de este trabajo acadeémico es construir una herramienta en código Python para predecir la la deserción y requiere de las
-      siguientes caracteristicas parra predecir:
-      
+      """ El objetivo de este trabajo acadeémico es construir una herramienta en código Python para predecir la deserción y requiere de las
+      siguientes caracteristicas parra predecir:      
       'COMP', 'PROM', 'COMINT', 'COMPPRES', 'RATE', 'DIASSINQ', 'TASARET', 'NUMQ', 'RETRE'.
       El modelo elegido sería Naive Bayes, pero vamos a predecir en los tres modelos solo para efectos de comparación.
       
@@ -117,28 +232,29 @@ Potenciar el branding de tu compañía al conseguir tener clientes más fieles, 
 
 Conocer más y mejor a tus clientes, lo que se traducirá en iterar la estrategia de cara a ser cada vez más customer-centric.
 
-Tomar decisiones más estratégicas de cara a optimizar procesos y campañas.
+Tomar decisiones más estratégicas de cara a optimizar procesos y campañas. """)
+    
 
-      """
-    )
-
-  with right_column:
-      st.subheader("Librerías usadas")
+  with center_column:
+      st.subheader("Librerías genericas usadas")
+      st.image("cliente.png",width=100)
       code = '''
-      # 
       import pandas as pd 
       import numpy as np 
       mport csv
       import matplotlib.pyplot as plt
-      import seaborn as sns
-      
+      import seaborn as sns  
       import joblib as jb
+     '''
+      st.code(code, language="python", line_numbers=True)
       
-      import warnings, requests, zipfile, io
-      warnings.simplefilter('ignore')
-      from scipy.io import arff
+
+  with right_column:
+      st.subheader("Librerías ML Scikit Learn usadas")
+      st.image("modulos.png",width=100)
+      code = '''
       
-      #importo los modelosfrom sklearn.naive_bayes import GaussianNB
+      #Dividir el dataset
       from sklearn.model_selection import train_test_split
       
       #importo las métricas
@@ -153,8 +269,10 @@ Tomar decisiones más estratégicas de cara a optimizar procesos y campañas.
       from sklearn.model_selection import cross_val_score
       from sklearn.model_selection import cross_val_predict
       
-      import ipywidgets as widgets
-      #arboles
+      #Naive Bayes
+      from sklearn.naive_bayes import GaussianNB
+      
+      #Arboles
       from sklearn import tree
       from sklearn.tree import plot_tree
 
@@ -165,27 +283,40 @@ Tomar decisiones más estratégicas de cara a optimizar procesos y campañas.
       st.code(code, language="python", line_numbers=True)
 
 
+# Vamos a crear las opciones para seleccionar el tipo de modelo
 
 modeloA=['Naive Bayes', 'Arbol de Decisión', 'Bosque Aleatorio']
+#Aqui creo un diccionario para indicar cuando el modelo devuleva un número , mostrar el equivalente
+# a si se retira o no.
 
-churn = {1 : 'Se retira', 0 : 'No se Retira' }
+churn = {1 : 'Cliente se retirará', 0 : 'Cliente No se Retirará' }
+
+#Empiezo a dar formato al sidebar o barra lateral
 
 
+#Usando markdown puedo cambiarl el formato a los titulos, textos, imagenes y demás.
 
-logo=Image.open("churn.JPG")
-st.sidebar.write('')
-st.sidebar.image(logo, width=100)
+styleimagen ="<style>[data-testid=stSidebar] [data-testid=stImage]{text-align: center;display: block;margin-left: auto;margin-right: auto;width: 100%;}</style>"
+st.sidebar.markdown(styleimagen, unsafe_allow_html=True)
+
+st.sidebar.image("Churn.JPG", width=300)
+
+#este script es para centrar pero si no lo desea no necesita hacerlo
+styletexto = "<style>h2 {text-align: center;}</style>"
+st.sidebar.markdown(styletexto, unsafe_allow_html=True)
 st.sidebar.header('Seleccione los datos de entrada')
 
+#Vammos a crear una función para mostrar todas las variables laterales para ingresar los datos en el model entrenado
+#QAqui vamos a usar varias opciones. Le pasamos por parámetro a la funcion el modelo.
 
 def seleccionar(modeloL):
 
-    #Filtrar por el modelo
+    #Opción para seleccionar el modelo en un combo box o opción desplegable
 
   st.sidebar.subheader('Selector de Modelo')
   modeloS=st.sidebar.selectbox("Modelo",modeloL)
 
-  #Filtrar por COMP
+  #Filtrar por COMP con un slider
   st.sidebar.subheader('Seleccione la COMP')
   COMPS=st.sidebar.slider("Seleccion",4000,18000,8000,100)
   
@@ -218,44 +349,81 @@ def seleccionar(modeloL):
   NUMQS=st.sidebar.slider("Seleccione",3.0,10.0,4.0,0.5)
   
     #Filtrar por departamento
-  st.sidebar.subheader('Selector de RETRE')
-  RETRES=st.sidebar.slider("Seleccione",3.3,35.0,20.0,.5)
-
+  st.sidebar.subheader('Selector de RETRE entre 3 y 30')
+  #RETRES=st.sidebar.slider("Seleccione",3.3,35.0,20.0,.5)
+  RETRES=st.sidebar.number_input("Ingrese el valor de RETRE", value=3.3, placeholder="Digite el numero...")
   
   return modeloS,COMPS, PROMS, COMINTS ,COMPPRESS, RATES, DIASSINQS,TASARETS, NUMQS, RETRES
 
 
+# Se llama la función, y se guardan los valores seleccionados en cada variable
+
 modelo,COMP, PROM, COMINT ,COMPPRES, RATE, DIASSINQ,TASARET, NUMQ, RETRE=seleccionar(modeloA)
 
+#Creamos un container para mostrar los resultados de predicción en el modelo que seleccione
 
-with st.container():
+with st.container(border=True):
   st.subheader("Predición")
   st.title("Predicción de Churn")
-  st.write("""
-           El siguiente es el pronóstico de la deserción usanDo el modelo
+  st.write(""" El siguiente es el pronóstico de la deserción usanDo el modelo
            """)
-
   st.write(modelo)
   st.write("Se han seleccionado los siguientes parámetros:")
+  # Presento los parámetros seleccionados en el slidder
   lista=[[COMP, PROM, COMINT ,COMPPRES, RATE, DIASSINQ,TASARET, NUMQ, RETRE]]
   X_predecir=pd.DataFrame(lista,columns=['COMP', 'PROM', 'COMINT', 'COMPPRES', 'RATE', 'DIASSINQ','TASARET', 'NUMQ', 'RETRE'])
-  st.write(X_predecir)
+  st.dataframe(X_predecir)
+  
+  #Creo un condicional para ejecutar el predict con base en el modelo seleccionado
+  #Aqui estamos usando predict_proba para mostrar la probalidad de cada clase.
+  # y tambien importancia para si el usiario quiere ver la importancia de cada variable en la predicción, en el modelo.
+  
+  
   if modelo=='Naive Bayes':
       y_predict=modeloNB.predict(X_predecir)
       probabilidad=modeloNB.predict_proba(X_predecir)
+      importancia=pd.DataFrame()
   elif modelo=='Arbol de Decisión':
       y_predict=modeloArbol.predict(X_predecir)
-      probabilidad=modeloNB.predict_proba(X_predecir)
+      probabilidad=modeloArbol.predict_proba(X_predecir)
+      importancia=modeloArbol.feature_importances_
+      features=modeloArbol.feature_names_in_
   else :
       y_predict=modeloBosque.predict(X_predecir)
-      probabilidad=modeloNB.predict_proba(X_predecir)
+      probabilidad=modeloBosque.predict_proba(X_predecir)
+      importancia=modeloBosque.feature_importances_
+      features=modeloBosque.feature_names_in_
     
+    
+  #Cambiarmos el formato de header del container
+  # recordar que classes_ muestra que el modelo devolverá dos clases la 0 para decir que no deserta
+  # y la 1 para indicar que deserta
   
-  prediccion= '<p style="font-family:sans-serif; color:Green; font-size: 42px;">La predicción es</p>'
-  st.markdown(prediccion, unsafe_allow_html=True)
-  prediccion='Resultado: '+ str(y_predict[0])+ "    - en conclusion el cliente  "+churn[y_predict[0]]
-  st.header(prediccion+':sunglasses:')
+  styleprediccion= '<p style="font-family:sans-serif; color:Green; font-size: 42px;">La predicción es</p>'
+  st.markdown(styleprediccion, unsafe_allow_html=True)
+  prediccion='Resultado: '+ str(y_predict[0])+ "    - en conclusion :"+churn[y_predict[0]]
+  st.header(prediccion+'   :warning:')
+  
   st.write("Con la siguiente probabilidad")
-  st.write('Probalidad de NO : ',"{0:.2%}".format(probabilidad[0][0]))
-  st.write('Probalidad de Si : ',"{0:.2%}".format(probabilidad[0][1]))
   
+  #Creamos dos columnas para mostrar las probabilidades de la predcción
+  # la variable probabilidad es una matriz de dos columnas asi el valor
+  # probabilidad[0][0] se refiere a la fila 0, y la columna 0, es decir el primer valor
+  # probabilidad[0][1] se refiere a la fila 0, y la columna 1, es decir el segundo valor
+ 
+  
+  col1, col2= st.columns(2)
+  col1.metric(label="Probalidad de NO :", value="{0:.2%}".format(probabilidad[0][0]),delta=" ")
+  col2.metric(label="Probalidad de SI:", value="{0:.2%}".format(probabilidad[0][1]),delta=" ")
+  
+  st.write("La importancia de cada Factor en el modelo es:")
+  if modelo!='Naive Bayes':
+    importancia=pd.Series(importancia,index=features)
+    st.bar_chart(importancia)  
+  else:
+    st.write("Naive Bayes no tiene parámetro de importancia de los features")
+
+
+#Una vez terminado el código y de probarlo localmente, copie todos los archivo en su reporsitorio de github.
+#Debe crear una cuenta en Streamlit.
+#Una vez creada la cuenta debes vincularla a una cuenta de Github. 
